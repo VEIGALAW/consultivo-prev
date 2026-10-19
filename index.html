@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Consultivo Previdenciário (Plutus 🧚‍♀️💰) · Veiga</title>
+<title>Previdenciário (Casa da Moeda 🪙) · Veiga</title>
 <style>
 /* ============================================================
    Identidade Veiga Partners (brandbook nov/2023)
@@ -486,8 +486,8 @@ footer .pl{width:12px;height:12px;background:var(--line3);-webkit-mask:var(--plu
     <div class="lockhero">
       <svg class="logo" viewBox="0 0 390.6 100" role="img" aria-label="Veiga Partners"><use href="#vp-logo"/></svg>
       <div class="rt"><span id="lockdate"></span> · Levantamento de créditos previdenciários</div>
-      <h1><span class="reveal"><span>Consultivo</span></span><span class="reveal d2"><span>Previdenciário</span></span><span class="reveal d3"><span class="pm" title="Plutus, o deus grego da riqueza, com a fadinha do grupo">(Plutus 🧚‍♀️💰)</span></span></h1>
-      <p class="lead">Diagnósticos em andamento, documentos pendentes, prazos de entrega, crédito identificado e métricas do time de consultivo previdenciário da Veiga.</p>
+      <h1><span class="reveal"><span>Previdenciário</span></span><span class="reveal d3"><span class="pm" title="Casa da Moeda: onde o crédito previdenciário vira dinheiro">(Casa da Moeda 🪙)</span></span></h1>
+      <p class="lead">Diagnósticos em andamento, documentos pendentes, prazos de entrega, crédito identificado e métricas do time de previdenciário da Veiga.</p>
     </div>
     <form class="lockbox" id="lockform">
       <div class="rt">Acesso do time</div>
@@ -507,7 +507,7 @@ footer .pl{width:12px;height:12px;background:var(--line3);-webkit-mask:var(--plu
 <header>
   <div class="wrap">
     <div class="top">
-      <div class="brand"><svg class="logo" viewBox="0 0 390.6 100" role="img" aria-label="Veiga Partners"><use href="#vp-logo"/></svg><span class="sep" aria-hidden="true"></span><div><b>Consultivo Previdenciário <span class="pm-b" title="Plutus, o deus grego da riqueza, com a fadinha do grupo">(Plutus 🧚‍♀️💰)</span></b><small id="upd"></small></div></div>
+      <div class="brand"><svg class="logo" viewBox="0 0 390.6 100" role="img" aria-label="Veiga Partners"><use href="#vp-logo"/></svg><span class="sep" aria-hidden="true"></span><div><b>Previdenciário <span class="pm-b" title="Casa da Moeda: onde o crédito previdenciário vira dinheiro">(Casa da Moeda 🪙)</span></b><small id="upd"></small></div></div>
       <div class="filters">
         <div class="seg" id="fgrp" role="group" aria-label="Momento">
           <button data-v="" class="on" aria-pressed="true">Todos</button><button data-v="pre" aria-pressed="false">Diagnóstico</button><button data-v="pos" aria-pressed="false">Pós-entrega</button><button data-v="fim" aria-pressed="false">Encerrados</button>
@@ -797,7 +797,7 @@ function renderKpis(){
   prevK = vals;
 }
 const vazio = msg => `<div class="empty" style="padding:28px 12px">${msg}</div>`;
-const SEM_DADOS = 'Nenhum diagnóstico ainda. Poste no grupo "Diagnóstico - Prev" no formato do Manual (ou peça a carga da planilha de diagnósticos) e o Plutus preenche na próxima rodada.';
+const SEM_DADOS = 'Nenhum diagnóstico ainda. Poste no grupo "Diagnóstico - Prev" no formato do Manual (ou peça a carga da planilha de diagnósticos) e a Casa da Moeda preenche na próxima rodada.';
 
 function renderWeek(dir){
   const mon = monday(weekOffset), days = [];
@@ -917,7 +917,7 @@ function renderManual(){
     <li><b>Concluído:</b> quando o crédito foi compensado ou restituído, ou a ação foi distribuída e entregue ao contencioso.</li>
   </ul></div>
   <div class="pbc" style="--i:4"><h3>Ritual do time</h3><ul>
-    <li><b>7h45 dos dias úteis:</b> o Plutus posta no grupo o que vence hoje, as entregas dos próximos 3 dias úteis, quem está esperando documentos e o que está parado com cada um.</li>
+    <li><b>7h45 dos dias úteis:</b> a Casa da Moeda posta no grupo o que vence hoje, as entregas dos próximos 3 dias úteis, quem está esperando documentos e o que está parado com cada um.</li>
     <li><b>Durante o dia:</b> todo movimento vai para o grupo no formato abaixo. O robô lê às 7h45 e às 19h45 e atualiza o painel.</li>
     <li><b>Segunda, 15 minutos:</b> revisão da esteira: zerar atrasados, cobrar documentos e aprovações, distribuir o que entrou.</li>
   </ul></div>
@@ -1117,7 +1117,7 @@ function boot(db){
     $("#banner").classList.remove("hide");
   }
   $("#upd").textContent = `Atualizado ${dt.toLocaleDateString("pt-BR")} ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})} · ${DB.diagnosticos.filter(x=>!FIM.has(x.fase)).length} diagnósticos ativos`;
-  $("#foot").innerHTML = `<span class="pl" aria-hidden="true"></span><span>Fonte: grupo "Diagnóstico - Prev" no Teams, lido pelo robô Plutus às 7h45 e 19h45. Último sync: ${DB.teams?.ultima_msg ? new Date(DB.teams.ultima_msg).toLocaleString("pt-BR") : "—"}.</span>`;
+  $("#foot").innerHTML = `<span class="pl" aria-hidden="true"></span><span>Fonte: grupo "Diagnóstico - Prev" no Teams, lido pelo robô Casa da Moeda às 7h45 e 19h45. Último sync: ${DB.teams?.ultima_msg ? new Date(DB.teams.ultima_msg).toLocaleString("pt-BR") : "—"}.</span>`;
   render();
   if(document.fonts) document.fonts.ready.then(moveInd);
   setTimeout(moveInd, 500);

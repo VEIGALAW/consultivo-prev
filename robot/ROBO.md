@@ -1,6 +1,6 @@
-# Robô Plutus → Painel do Consultivo Previdenciário
+# Robô Casa da Moeda 🪙 → Painel Previdenciário
 
-Roda na nuvem (rotina "Robô Consultivo Prev (Plutus)" no claude.ai) às **7h45 e 19h45**. Lê o grupo **Diagnóstico - Prev** no Teams e atualiza o painel https://veigalaw.github.io/consultivo-prev/. Às 7h45 dos dias úteis posta a agenda do dia no grupo.
+Roda na nuvem (rotina "Robô Previdenciário (Casa da Moeda)" no claude.ai) às **7h45 e 19h45**. Lê o grupo **Diagnóstico - Prev** no Teams e atualiza o painel https://veigalaw.github.io/consultivo-prev/. Às 7h45 dos dias úteis posta a agenda do dia no grupo.
 
 ## Arquivos
 
@@ -9,7 +9,7 @@ Roda na nuvem (rotina "Robô Consultivo Prev (Plutus)" no claude.ai) às **7h45 
 | `private/diagnosticos.json` | Base em texto aberto, regenerada a partir do publicado em cada rodada | **Não** |
 | `data/diagnosticos.enc.json` | Base criptografada (fonte da verdade; é o que o painel lê) | Sim |
 | `robot/build.py` | `--pull` puxa e decripta; sem flag valida, calcula prazo de entrega e criptografa; `--push` publica | Sim |
-| `robot/digest.py` | Monta a mensagem diária do Plutus | Sim |
+| `robot/digest.py` | Monta a mensagem diária da Casa da Moeda | Sim |
 
 ## Modelo de cada diagnóstico
 
@@ -37,7 +37,7 @@ Roda na nuvem (rotina "Robô Consultivo Prev (Plutus)" no claude.ai) às **7h45 
 5. **Feed:** inserir no topo de `feed` um item por movimento relevante `{data, autor, texto}` em uma linha. Máximo 200 itens.
 6. `teams.ultima_msg` = `createdDateTime` da mensagem mais nova lida; `atualizado_em` = agora (UTC ISO).
 7. `python robot/build.py --push` (**sempre**, mesmo sem mensagens novas: os alertas do painel dependem da data de publicação).
-8. **Só na rodada da manhã (antes das 12h, dia útil):** `python robot/digest.py` e postar o HTML de `private/digest.html` no chat (uma mensagem, formato HTML), se ainda não houver mensagem de hoje começando com 🤖 "Plutus · agenda do consultivo prev".
+8. **Só na rodada da manhã (antes das 12h, dia útil):** `python robot/digest.py` e postar o HTML de `private/digest.html` no chat (uma mensagem, formato HTML), se ainda não houver mensagem de hoje começando com 🤖 "Casa da Moeda · agenda do previdenciário".
 
 ## Dúvidas (perguntar ao time pelo grupo)
 

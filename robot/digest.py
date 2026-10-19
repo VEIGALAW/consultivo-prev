@@ -1,4 +1,4 @@
-"""Mensagem diária do Plutus (HTML do Teams) para o grupo "Diagnóstico - Prev".
+"""Mensagem diária da Casa da Moeda (HTML do Teams) para o grupo "Diagnóstico - Prev".
 
   python robot/digest.py      grava private/digest.html e imprime o HTML
 
@@ -79,7 +79,7 @@ def main():
     marcos = [x for x in db["diagnosticos"] if (x.get("entregue_em") or "") >= desde or (x.get("aprovado_em") or "") >= desde
               or (x["fase"] == "concluido" and (x.get("fase_desde") or "") >= desde)]
 
-    p = [f"<p>🤖 <b>Plutus · agenda do consultivo prev ({DOW[hoje.weekday()]} {hoje:%d/%m})</b></p>"]
+    p = [f"<p>🤖 <b>Casa da Moeda · agenda do previdenciário ({DOW[hoje.weekday()]} {hoje:%d/%m})</b></p>"]
     if marcos:
         p.append("<p>🏆 <b>Marcos</b></p><ul>" + "".join(
             f"<li>{escape(x['cliente'])}: {'concluído' if x['fase'] == 'concluido' else 'aprovado' if (x.get('aprovado_em') or '') >= desde else 'diagnóstico entregue'}{' · ' + brl(valor(x)) if valor(x) else ''}</li>" for x in marcos) + "</ul>")
