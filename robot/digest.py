@@ -85,6 +85,9 @@ def main():
             f"<li>{escape(x['cliente'])}: {'concluído' if x['fase'] == 'concluido' else 'aprovado' if (x.get('aprovado_em') or '') >= desde else 'diagnóstico entregue'}{' · ' + brl(valor(x)) if valor(x) else ''}</li>" for x in marcos) + "</ul>")
     if novos:
         p.append("<p>🆕 <b>Novos diagnósticos</b></p><ul>" + "".join(item(x, f" · {escape(x.get('responsavel') or 'sem responsável')}") for x in novos) + "</ul>")
+    duv = [f"<b>{escape(x['cliente'])}</b>: {escape(x['duvida'])}" for x in db["diagnosticos"] if x.get("duvida")] + [escape(q) for q in db.get("duvidas_gerais", [])]
+    if duv:
+        p.append("<p>❓ <b>Dúvidas do robô: respondam aqui no grupo</b> (pode ser em texto livre; leio na próxima rodada)</p><ol>" + "".join(f"<li>{q}</li>" for q in duv) + "</ol>")
     p.append(secao("🚨 Entrega atrasada", atrasadas, lambda x: item(x, f" · prometida para {x['prazo_entrega'][8:10]}/{x['prazo_entrega'][5:7]}")))
     p.append(secao("📅 Para hoje", hoje_l))
     p.append(secao("⏳ Entregas nos próximos 3 dias úteis", entregas, lambda x: item(x, f" · entrega {x['prazo_entrega'][8:10]}/{x['prazo_entrega'][5:7]}")))
