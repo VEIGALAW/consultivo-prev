@@ -465,6 +465,7 @@ footer .pl{width:12px;height:12px;background:var(--line3);-webkit-mask:var(--plu
   .reveal span{transform:none}
   .bar .fill{transition:none}
 }
+.card .etp{margin-top:4px}.card .etp .tag{font-size:10.5px;padding:1px 6px}
 </style>
 </head>
 <body>
@@ -618,6 +619,18 @@ const FASES = [
 ];
 const FS = Object.fromEntries(FASES.map((s,i)=>[s.k,{...s,i}]));
 const CURTO = {contratacao:"Contrato", documentos:"Documentos", conferencia:"Conferência", levantamento:"Cálculo", revisao:"Revisão", entrega:"Pronto", aprovacao:"Aprovação", execucao:"Execução", concluido:"Concluído"};
+/* Etapas do levantamento, na ordem da planilha Fila Prev */
+const ETAPAS = [["darfs","DARFs"],["esocial","eSocial"],["ma","MA"],["wp","WP"],["ppt","PPT"],["mapa","Mapa de Ação"]];
+const ETQ = {ok:"concluída", andamento:"em elaboração", pendente:"pendente", na:"não se aplica", sem_esocial:"cliente sem eSocial"};
+function etapasLine(x, big){
+  if(!x.etapas) return "";
+  return `<span class="r3 etp">${ETAPAS.map(([k,l]) => { const v = x.etapas[k] || "pendente";
+    if(v === "na") return big ? `<span class="tag stage" style="opacity:.55" title="${l}: não se aplica">${l} —</span>` : "";
+    const cls = v === "ok" ? "ok" : v === "andamento" ? "warn" : v === "sem_esocial" ? "late" : "stage";
+    const ic = v === "ok" ? "✓" : v === "andamento" ? "…" : v === "sem_esocial" ? "✕" : "○";
+    return `<span class="tag ${cls}" title="${l}: ${ETQ[v]||v}">${l} ${ic}</span>`; }).join("")}</span>`;
+}
+const etapasFeitas = x => x.etapas ? ETAPAS.filter(([k]) => ["ok","na"].includes(x.etapas[k])).length : null;
 const FLUXO = ["contratacao","documentos","conferencia","levantamento","revisao","entrega","aprovacao","execucao","concluido"];
 const PRE = new Set(["contratacao","documentos","conferencia","levantamento","revisao","entrega"]);
 const POS = new Set(["aprovacao","execucao"]);
@@ -699,7 +712,8 @@ function enrich(x){
   x._agenda = x.proxima_data || (PRE.has(x.fase) ? x.prazo_entrega : "") || "";
   x._semData = x._open && !x._agenda;
   x._teses = (x.teses || []).join(" · ");
-  x._text = [x.cliente,x.cnpj,x._teses,x.responsavel,x.revisor,x.proximo_passo,(x.docs_pendentes||[]).join(" "),x.modalidade].join(" ").toLowerCase();
+  x._etp = etapasFeitas(x) ?? -1;
+  x._text = [x.cliente,x.grupo,(x.cnpjs||[]).join(" "),x.cnpj,x._teses,x.responsavel,x.revisor,x.proximo_passo,(x.docs_pendentes||[]).join(" "),x.modalidade].join(" ").toLowerCase();
   return x;
 }
 function filtered(){
@@ -763,8 +777,9 @@ function card(x, i){
   return `<button class="card" type="button" data-id="${esc(x.id)}" style="--i:${i||0}">
     <span class="r1">${grpTag(x)}${health(x)}</span>
     <span class="co">${esc(x.cliente)}</span>
-    <span class="who">${esc(x._teses || "Teses a definir")}${x.cnpj?" · "+esc(x.cnpj):""}</span>
+    <span class="who">${esc([x.grupo, x.cnpj].filter(Boolean).join(" · "))}${(x.cnpjs||[]).length>1?` · +${x.cnpjs.length-1} filia${x.cnpjs.length>2?"is":"l"}`:""}${x._teses?" · "+esc(x._teses):""}</span>
     <span class="ns ${x.proximo_passo?"":"todo"}">${esc(x.proximo_passo||"Definir próximo passo")}</span>
+    ${etapasLine(x)}
     <span class="r3">${dataLine(x)}${x._valor?`<span class="tag time" title="${x.credito_aprovado!=null?"Crédito aprovado":x.credito_identificado!=null?"Crédito identificado":"Crédito estimado"}">${BRLc(x._valor)}</span>`:""}${faseTag(x)}${ownerChip(x.responsavel)}</span>
   </button>`;
 }
@@ -835,8 +850,8 @@ function renderEquipe(){
 
 const COLS = [
   ["_grp","Momento", x => grpTag(x)],
-  ["cliente","Cliente", x => `<b>${esc(x.cliente)}</b>${x.cnpj?`<div style="color:var(--muted);font-size:12px">${esc(x.cnpj)}</div>`:""}`],
-  ["_teses","Teses", x => esc(x._teses || "—")],
+  ["cliente","Cliente", x => `<b>${esc(x.cliente)}</b><div style="color:var(--muted);font-size:12px">${esc([x.grupo, x.cnpj].filter(Boolean).join(" · "))}</div>`],
+  ["_etp","Etapas", x => x.etapas ? `<span class="num">${etapasFeitas(x)}/6</span>` : "—"],
   ["fase","Fase", x => faseTag(x)],
   ["responsavel","Responsável", x => ownerChip(x.responsavel)],
   ["prazo_entrega","Entrega", x => `<span class="num">${fmtDow(x.prazo_entrega)}</span> ${x._atrasada||x._entregaProx?health(x):""}`],
@@ -881,6 +896,14 @@ function renderManual(){
   </ol></div>
   <div class="pbc" style="--i:1"><h3>Fases, critério de entrada, bola e máximo parado</h3>
     <table><thead><tr><th>Fase</th><th>Entra quando</th><th>Bola</th><th>Máx. parado</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="pbc" style="--i:2"><h3>As 6 etapas do levantamento (planilha Fila Prev)</h3><ol>
+    <li><b>DARFs:</b> guias pagas do período recebidas.</li>
+    <li><b>eSocial:</b> documentos e eventos do eSocial recebidos (sem eSocial, definir base alternativa).</li>
+    <li><b>MA:</b> memória de apuração dos créditos.</li>
+    <li><b>WP:</b> papel de trabalho com os cálculos e a fundamentação.</li>
+    <li><b>PPT:</b> apresentação para o cliente.</li>
+    <li><b>Mapa de Ação:</b> plano do que fazer com cada crédito (retificação, compensação, ação).</li>
+  </ol><p style="color:var(--muted);font-size:12px;margin:10px 0 0">Sem DARFs ou eSocial o diagnóstico fica em "Aguardando documentos"; com MA, WP, PPT ou Mapa por fazer, em "Levantamento"; tudo pronto, em "Pronto para entrega". Etapa marcada "não se aplica" conta como concluída.</p></div>
   <div class="pbc" style="--i:2"><h3>Checklist de documentos (kickoff)</h3><ul>
     <li>Procuração eletrônica no e-CAC (com os serviços de DCTFWeb, PER/DCOMP e situação fiscal).</li>
     <li>Folhas de pagamento analíticas dos últimos 5 anos e tabela de rubricas com as incidências (INSS, FGTS, IRRF).</li>
@@ -910,6 +933,9 @@ Empresa X | diagnóstico apresentado | aguardar aprovação | 05/11 #aprovacao
 Empresa X | aprovou R$ 700 mil, honorários 20% | compensar na DCTFWeb #execucao
 Empresa X | pendência: folhas de 2021 e FAP 2022
 Empresa X | prazo de entrega 30/10
+Empresa X | WP: ok
+Empresa X | PPT: em elaboração
+Fasipe | Mapa de Ação: ok (vale para todas as empresas do grupo citadas)
 #cancelado Empresa Y | sem crédito viável</pre>
     <p style="margin:12px 0 0;color:var(--muted);font-size:12px">Mais fácil: abra o diagnóstico no painel, preencha "Registrar movimento", clique em <b>Copiar mensagem</b> e cole no grupo.</p></div>
   </div>
@@ -962,6 +988,8 @@ function renderMetrics(){
     <div class="mcard w4" style="--i:4"><h3>Tempo médio na fase atual</h3><p class="hint">Onde a esteira empoça.</p>${bars(porFase, Math.max(...porFase.map(b=>b[1]),1))}</div>
     <div class="mcard w6" style="--i:5"><h3>Esperando o cliente</h3><p class="hint">Documentos e aprovações pendentes, do mais antigo para o mais novo.</p>
       ${cliente.map(x => `<div class="bar" data-id="${esc(x.id)}" style="cursor:pointer"><span>${esc(x.cliente)}</span><span style="color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.fase==="documentos"?((x.docs_pendentes||[]).join(", ")||"documentos"):"aprovação do diagnóstico")}</span><span class="v">${x._comCliente||0}d</span></div>`).join("") || '<div class="empty">Ninguém esperando o cliente.</div>'}</div>
+    <div class="mcard w6" style="--i:6"><h3>Etapas pendentes</h3><p class="hint">Diagnósticos ativos com a etapa por fazer ou em elaboração.</p>${bars(ETAPAS.map(([k,l]) => [l, open.filter(x => x.etapas && !["ok","na"].includes(x.etapas[k])).length]), Math.max(1, ...ETAPAS.map(([k]) => open.filter(x => x.etapas && !["ok","na"].includes(x.etapas[k])).length)))}</div>
+    <div class="mcard w6" style="--i:6"><h3>Por grupo econômico</h3><p class="hint">Diagnósticos ativos por grupo.</p>${(() => { const g = {}; open.forEach(x => { const k = x.grupo || x.cliente; g[k] = (g[k]||0) + 1; }); const r = Object.entries(g).sort((a,b) => b[1]-a[1]); return bars(r, Math.max(1, ...r.map(e => e[1]))); })()}</div>
     <div class="mcard w6" style="--i:6"><h3>Por tese</h3><p class="hint">Teses mais presentes na carteira ativa (pelo crédito, quando informado por tese).</p>${tRows.length?bars(tRows, Math.max(...tRows.map(r=>r[1]),1)):'<div class="empty">Teses ainda não informadas.</div>'}</div>
     <div class="mcard w6" style="--i:7"><h3>Ritmo: entregas por semana</h3><p class="hint">Últimas 6 semanas.</p>${bars(semanas, Math.max(...semanas.map(s=>s[1]),1))}</div>
   </div>`;
@@ -976,6 +1004,7 @@ function composer(x){
     <div class="f"><label for="c-what">O que aconteceu</label><textarea id="c-what" placeholder="Ex.: documentos completos recebidos"></textarea></div>
     <div class="f"><label for="c-next">Próximo passo</label><input type="text" id="c-next" value=""></div>
     <div class="row"><div class="f"><label for="c-date">Data do próximo passo</label><input type="date" id="c-date"></div><div class="f"><label for="c-cred">Crédito (R$)</label><input type="number" id="c-cred" min="0" step="1000" placeholder="${x._valor||""}"></div></div>
+    <div class="row"><div class="f"><label for="c-etp">Etapa</label><select id="c-etp"><option value="">—</option>${ETAPAS.map(([k,l]) => `<option value="${k}">${l}</option>`).join("")}</select></div><div class="f"><label for="c-etpst">Situação da etapa</label><select id="c-etpst"><option value="ok">concluída</option><option value="andamento">em elaboração</option><option value="pendente">pendente</option><option value="na">não se aplica</option></select></div></div>
     <div class="row"><div class="f"><label for="c-stage">Fase</label><select id="c-stage">${opts}</select></div><div class="f"><label for="c-resp">Responsável</label><select id="c-resp">${pessoas.map(p => `<option ${p===x.responsavel?"selected":""}>${esc(p)}</option>`).join("")}</select></div></div>
     <div class="out"><div class="rt">Mensagem para o grupo</div><pre id="c-out" aria-live="polite"></pre></div>
     <div class="acts"><button class="btn primary" type="button" id="c-copy">${ICON.copy}Copiar mensagem</button>${DB.teams?.chat_id?`<a class="btn" href="https://teams.microsoft.com/l/chat/${encodeURIComponent(DB.teams.chat_id)}/conversations" target="_blank" rel="noopener">Abrir o grupo ${ICON.ext}</a>`:""}</div>
@@ -987,6 +1016,7 @@ function composerMsg(x){
   const partes = ["ATUALIZAÇÃO", x.cliente, v("#c-what") || "…", v("#c-next") || "…"];
   if(d) partes.push(ddmm(d));
   if(c) partes.push(`crédito ${BRL(Number(c))}`);
+  const et = $("#c-etp").value; if(et) partes.push(`${ETAPAS.find(e => e[0] === et)[1]}: ${({ok:"ok",andamento:"em elaboração",pendente:"pendente",na:"não se aplica"})[$("#c-etpst").value]}`);
   if(r && r !== x.responsavel) partes.push(`responsável: ${r}`);
   return partes.join(" | ") + (st !== x.fase ? ` #${st}` : "");
 }
@@ -1008,14 +1038,17 @@ function openDg(id){
   const entTxt = x.prazo_entrega ? `${fmtDow(x.prazo_entrega)}${PRE.has(x.fase)?` · ${x._atrasada?`atrasada há ${daysBetween(x.prazo_entrega, TODAY)} dias`:x._entregaUteis===0?"vence hoje":`faltam ${x._entregaUteis} dias úteis`}`:""}${x.prazo_entrega_auto?" (20 dias úteis dos documentos)":""}` : "não definido";
   $("#drawer").innerHTML = `<div class="dw">
     <div class="tags">${grpTag(x)} ${faseTag(x)} ${health(x)}${x.revisar?' <span class="tag warn" title="Dado inferido; confirmar com o time">confirmar</span>':""}<button class="btn icon" id="dwclose" type="button" aria-label="Fechar painel">${ICON.x}</button></div>
-    <div><h2>${esc(x.cliente)}</h2><div class="sub">${esc(x._teses || "Teses a definir")}${x.cnpj?" · "+esc(x.cnpj):""}</div></div>
+    <div><h2>${esc(x.cliente)}</h2><div class="sub">${esc([x.grupo, x._teses].filter(Boolean).join(" · ") || "Teses a definir")}</div></div>
     ${stepper(x)}
     <div class="box next ${x._atrasada||x._entregaProx?"late":""}"><h4>Entrega e próximo passo</h4>
       <div class="what">Entrega: ${entTxt}</div>
       <div class="what ${x.proximo_passo?"":"todo"}" style="margin-top:8px">${esc(x.proximo_passo || "Definir próximo passo")}</div>
       <div class="when"><span class="num">${fmtDow(x.proxima_data)}</span>${ownerChip(x.responsavel)}${x.revisor?` <span class="tag stage">revisor: ${esc(x.revisor)}</span>`:""}</div>
     </div>
+    ${x.etapas?`<div class="box"><h4>Etapas do levantamento (${etapasFeitas(x)} de 6)</h4>${etapasLine(x, true)}</div>`:""}
     <dl class="grid2">
+      <dt>Grupo</dt><dd>${esc(x.grupo)||"—"}</dd>
+      <dt>CNPJs</dt><dd class="num">${(x.cnpjs||[x.cnpj]).filter(Boolean).map(esc).join("<br>")||"—"}</dd>
       <dt>Crédito estimado</dt><dd class="num">${BRL(x.credito_estimado)}</dd>
       <dt>Crédito identificado</dt><dd class="num">${BRL(x.credito_identificado)}</dd>
       <dt>Crédito aprovado</dt><dd class="num">${BRL(x.credito_aprovado)}</dd>
@@ -1042,7 +1075,7 @@ function openDg(id){
   $("#drawer").scrollTop = 0;
   requestAnimationFrame(() => requestAnimationFrame(() => { const p = $("#stepprog"); if(p) p.style.width = p.dataset.w + "%"; }));
   const upd = () => { $("#c-out").textContent = composerMsg(x); };
-  ["#c-what","#c-next","#c-date","#c-cred","#c-stage","#c-resp"].forEach(id => { $(id).addEventListener("input", upd); $(id).addEventListener("change", upd); });
+  ["#c-what","#c-next","#c-date","#c-cred","#c-etp","#c-etpst","#c-stage","#c-resp"].forEach(id => { $(id).addEventListener("input", upd); $(id).addEventListener("change", upd); });
   upd();
   $("#c-copy").onclick = async () => {
     const txt = composerMsg(x), b = $("#c-copy");

@@ -51,6 +51,9 @@ def validar(db):
                     date.fromisoformat(v)
                 except ValueError:
                     erros.append(f"{i}: {c} fora do formato AAAA-MM-DD: {v}")
+        for e, v in (x.get("etapas") or {}).items():
+            if e not in ("darfs", "esocial", "ma", "wp", "ppt", "mapa") or v not in ("ok", "andamento", "pendente", "na", "sem_esocial"):
+                erros.append(f"{i}: etapa inválida {e}={v}")
         for c in ("credito_estimado", "credito_identificado", "credito_aprovado", "honorarios_pct"):
             v = x.get(c)
             if v is not None and not isinstance(v, (int, float)):
