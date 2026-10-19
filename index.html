@@ -510,7 +510,7 @@ footer .pl{width:12px;height:12px;background:var(--line3);-webkit-mask:var(--plu
       <div class="brand"><svg class="logo" viewBox="0 0 390.6 100" role="img" aria-label="Veiga Partners"><use href="#vp-logo"/></svg><span class="sep" aria-hidden="true"></span><div><b>Previdenciário <span class="pm-b" title="Casa da Moeda: onde o crédito previdenciário vira dinheiro">(Casa da Moeda 🪙)</span></b><small id="upd"></small></div></div>
       <div class="filters">
         <div class="seg" id="fgrp" role="group" aria-label="Momento">
-          <button data-v="" class="on" aria-pressed="true">Todos</button><button data-v="pre" aria-pressed="false">Diagnóstico</button><button data-v="pos" aria-pressed="false">Pós-entrega</button><button data-v="fim" aria-pressed="false">Encerrados</button>
+          <button data-v="" class="on" aria-pressed="true">Todos</button><button data-v="diag" aria-pressed="false">Diagnóstico</button><button data-v="interna" aria-pressed="false">Apresentação interna</button><button data-v="cliente" aria-pressed="false">Entrega cliente</button><button data-v="exec" aria-pressed="false">Execução</button><button data-v="fim" aria-pressed="false">Encerrados</button>
         </div>
         <select id="fowner" aria-label="Responsável"></select>
         <div class="search">
@@ -543,7 +543,7 @@ footer .pl{width:12px;height:12px;background:var(--line3);-webkit-mask:var(--plu
   <details class="legend">
     <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>Como ler este painel</summary>
     <div class="items">
-      <span><span class="pill rm">Diagnóstico</span><span class="pill sn">Pós-entrega</span>momento do trabalho</span>
+      <span><span class="pill sn">Diagnóstico</span><span class="pill sn" style="border-style:dashed">Apresentação interna</span><span class="pill rm">Entrega cliente</span><span class="pill rm" style="opacity:.75">Execução</span>momento do trabalho</span>
       <span><span class="tag late">entrega atrasada 3d</span>passou do prazo de entrega prometido ao cliente</span>
       <span><span class="tag warn">entrega em 2d</span>entrega em até 3 dias úteis</span>
       <span><span class="tag stage">com cliente 9d</span>esperando documentos ou aprovação</span>
@@ -610,15 +610,15 @@ const FASES = [
   {k:"documentos",   t:"Aguardando documentos",     bola:"cliente", sla:5,  exit:"Checklist enviado; o cliente ainda não mandou tudo"},
   {k:"conferencia",  t:"Conferência de documentos", bola:"nós",     sla:2,  exit:"Documentos recebidos; conferir se estão completos e consistentes"},
   {k:"levantamento", t:"Levantamento / cálculo",    bola:"nós",     sla:10, exit:"Base completa; cálculo das teses em andamento"},
-  {k:"revisao",      t:"Revisão técnica",           bola:"nós",     sla:3,  exit:"Cálculo pronto, com o revisor"},
-  {k:"entrega",      t:"Pronto para entrega",       bola:"nós",     sla:2,  exit:"Revisado; falta apresentar o diagnóstico ao cliente"},
+  {k:"revisao",      t:"Apresentação interna",      bola:"nós",     sla:3,  exit:"Levantamento pronto; revisão e apresentação interna antes de ir ao cliente"},
+  {k:"entrega",      t:"Entrega ao cliente",        bola:"nós",     sla:2,  exit:"Aprovado internamente; apresentação ao cliente marcada ou a marcar"},
   {k:"aprovacao",    t:"Aguardando aprovação",      bola:"cliente", sla:7,  exit:"Diagnóstico entregue; o cliente decide o que seguir"},
   {k:"execucao",     t:"Execução",                  bola:"nós",     sla:15, exit:"Aprovado; retificação, compensação (DCTFWeb, PER/DCOMP) ou ação judicial em andamento"},
   {k:"concluido",    t:"Concluído",                 bola:"—",       sla:999,exit:"Crédito compensado/restituído ou ação distribuída e entregue ao contencioso"},
   {k:"cancelado",    t:"Cancelado / sem crédito",   bola:"—",       sla:999,exit:"Cliente desistiu ou o levantamento não encontrou crédito viável"},
 ];
 const FS = Object.fromEntries(FASES.map((s,i)=>[s.k,{...s,i}]));
-const CURTO = {contratacao:"Contrato", documentos:"Documentos", conferencia:"Conferência", levantamento:"Cálculo", revisao:"Revisão", entrega:"Pronto", aprovacao:"Aprovação", execucao:"Execução", concluido:"Concluído"};
+const CURTO = {contratacao:"Contrato", documentos:"Documentos", conferencia:"Conferência", levantamento:"Cálculo", revisao:"Apres. interna", entrega:"Entrega", aprovacao:"Aprovação", execucao:"Execução", concluido:"Concluído"};
 /* Etapas do levantamento, na ordem da planilha Fila Prev */
 const ETAPAS = [["darfs","DARFs"],["esocial","eSocial"],["ma","MA"],["wp","WP"],["ppt","PPT"],["mapa","Mapa de Ação"]];
 const ETQ = {ok:"concluída", andamento:"em elaboração", pendente:"pendente", na:"não se aplica", sem_esocial:"cliente sem eSocial"};
@@ -632,6 +632,9 @@ function etapasLine(x, big){
 }
 const etapasFeitas = x => x.etapas ? ETAPAS.filter(([k]) => ["ok","na"].includes(x.etapas[k])).length : null;
 const FLUXO = ["contratacao","documentos","conferencia","levantamento","revisao","entrega","aprovacao","execucao","concluido"];
+/* Momento do trabalho (pedido da Natasha): Diagnóstico → Apresentação interna → Entrega cliente → Execução */
+const MOMENTO = {contratacao:"diag", documentos:"diag", conferencia:"diag", levantamento:"diag", revisao:"interna", entrega:"cliente", aprovacao:"cliente", execucao:"exec", concluido:"fim", cancelado:"fim"};
+const MOM_T = {diag:"Diagnóstico", interna:"Apresentação interna", cliente:"Entrega cliente", exec:"Execução", fim:"Encerrado"};
 const PRE = new Set(["contratacao","documentos","conferencia","levantamento","revisao","entrega"]);
 const POS = new Set(["aprovacao","execucao"]);
 const FIM = new Set(["concluido","cancelado"]);
@@ -696,7 +699,7 @@ async function unlock(pw, remember){
 function enrich(x){
   const s = FS[x.fase] || FS.contratacao;
   x._open = !FIM.has(x.fase);
-  x._grp = PRE.has(x.fase) ? "pre" : POS.has(x.fase) ? "pos" : "fim";
+  x._grp = MOMENTO[x.fase] || "diag";
   x._bola = s.bola; x._ft = s.t;
   x._parado = x.ultimo_movimento ? daysBetween(x.ultimo_movimento, TODAY) : null;
   x._stale = x._open && x._parado != null && x._parado > s.sla;
@@ -756,7 +759,7 @@ function moveInd(){
 }
 
 /* ---------- componentes ---------- */
-const grpTag = x => x._grp === "pre" ? `<span class="pill rm">Diagnóstico</span>` : x._grp === "pos" ? `<span class="pill sn">Pós-entrega</span>` : `<span class="tag stage">Encerrado</span>`;
+const grpTag = x => ({diag:`<span class="pill sn">Diagnóstico</span>`, interna:`<span class="pill sn" style="border-style:dashed">Apresentação interna</span>`, cliente:`<span class="pill rm">Entrega cliente</span>`, exec:`<span class="pill rm" style="opacity:.75">Execução</span>`, fim:`<span class="tag stage">Encerrado</span>`})[x._grp] || "";
 const ownerChip = o => `<span class="owner"><span class="dot ${!o?"nobody":""}" aria-hidden="true">${!o?"?":esc(o[0])}</span>${esc(o||"Sem responsável")}</span>`;
 const faseTag = x => `<span class="tag stage" title="${esc(FS[x.fase]?.exit||"")}">${esc(x._ft)}</span>`;
 function health(x){
@@ -892,10 +895,16 @@ function renderManual(){
     <li><b>Prazo de entrega prometido ao cliente:</b> ${"20 dias úteis"} a partir do recebimento completo dos documentos, salvo outro prazo combinado (informe no grupo). Atrasou, aparece em vermelho na agenda.</li>
     <li><b>Tempo é crédito.</b> A restituição ou compensação alcança só os pagamentos dos últimos 5 anos (CTN, art. 168, I; LC 118/05, art. 3º). A cada mês parado, uma competência sai do prazo: o painel mostra esse custo (crédito ÷ 60 por mês).</li>
     <li><b>Documento faltando é bola do cliente, mas a cobrança é nossa.</b> Checklist enviado no kickoff; cobrança registrada em D+2 e D+5 úteis; em D+7 o sócio escala.</li>
-    <li><b>Ninguém entrega sem revisão técnica.</b> Cálculo e memória conferidos por outra pessoa antes de ir ao cliente.</li>
+    <li><b>Ninguém entrega sem apresentação interna.</b> Cálculo e memória conferidos e apresentados internamente antes de ir ao cliente.</li>
   </ol></div>
   <div class="pbc" style="--i:1"><h3>Fases, critério de entrada, bola e máximo parado</h3>
     <table><thead><tr><th>Fase</th><th>Entra quando</th><th>Bola</th><th>Máx. parado</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="pbc" style="--i:2"><h3>Momentos do trabalho</h3><ul>
+    <li><b>Diagnóstico:</b> contratação, documentos, conferência e levantamento (as 6 etapas abaixo).</li>
+    <li><b>Apresentação interna:</b> levantamento pronto, revisado e apresentado ao time antes de ir ao cliente.</li>
+    <li><b>Entrega cliente:</b> apresentação ao cliente marcada ou feita, e aguardando a aprovação dele.</li>
+    <li><b>Execução:</b> aprovado; compensação, restituição ou ação judicial.</li>
+  </ul></div>
   <div class="pbc" style="--i:2"><h3>As 6 etapas do levantamento (planilha Fila Prev)</h3><ol>
     <li><b>DARFs:</b> guias pagas do período recebidas.</li>
     <li><b>eSocial:</b> documentos e eventos do eSocial recebidos (sem eSocial, definir base alternativa).</li>
@@ -928,7 +937,8 @@ function renderManual(){
 ATUALIZAÇÃO | CLIENTE | o que aconteceu | próximo passo | dd/mm #fase
 Empresa X | checklist enviado | cobrar documentos | 23/10 #documentos
 Empresa X | documentos completos recebidos | conferir | 21/10 #conferencia
-Empresa X | levantamento pronto: crédito R$ 820 mil | Márcia revisar | 28/10 #revisao
+Empresa X | levantamento pronto: crédito R$ 820 mil | apresentação interna | 28/10 #revisao
+Empresa X | apresentação ao cliente marcada | apresentar | 30/10 #entrega
 Empresa X | diagnóstico apresentado | aguardar aprovação | 05/11 #aprovacao
 Empresa X | aprovou R$ 700 mil, honorários 20% | compensar na DCTFWeb #execucao
 Empresa X | pendência: folhas de 2021 e FAP 2022
@@ -982,6 +992,7 @@ function renderMetrics(){
       <div class="big"><div><b>${BRL(honor)}</b><span>honorários potenciais</span></div><div><b>${BRL(aprov)}</b><span>crédito aprovado pelos clientes</span></div><div><b>${BRL(custo)}</b><span>custo de cada mês de atraso (decadência)</span></div></div></div>
     <div class="mcard w3" style="--i:1"><h3>Prazo de entrega</h3><p class="hint">Entregas prometidas ao cliente.</p>
       <div class="big"><div><b>${pctPrazo}</b><span>entregues no prazo</span></div><div><b>${lead.length?media(lead)+"d":"—"}</b><span>dos documentos à entrega</span></div><div><b>${open.filter(x=>x._atrasada).length}</b><span>atrasadas agora</span></div></div></div>
+    <div class="mcard w4" style="--i:2"><h3>Por momento</h3><p class="hint">Diagnósticos ativos em cada momento.</p>${(() => { const r = ["diag","interna","cliente","exec"].map(k => [MOM_T[k], open.filter(x => x._grp === k).length]); return bars(r, Math.max(1, ...r.map(e => e[1]))); })()}</div>
     <div class="mcard w4" style="--i:2"><h3>Funil</h3><p class="hint">Quantos chegaram a cada etapa e o % que passou da anterior.</p>${bars(funil, maxR)}</div>
     <div class="mcard w8" style="--i:3"><h3>Carga e saúde por pessoa</h3><p class="hint">Risco = entrega atrasada ou em até 3 dias úteis. Entregues 30d = diagnósticos entregues nos últimos 30 dias.</p>
       <div class="tablewrap" style="border:0;border-radius:0;box-shadow:none"><table style="min-width:720px"><thead><tr><th>Pessoa</th><th>Ativos</th><th>Risco</th><th>Com cliente</th><th>Para revisar</th><th>Parados</th><th>Carteira</th><th>Entregues 30d</th></tr></thead><tbody>${pRows}</tbody></table></div></div>
