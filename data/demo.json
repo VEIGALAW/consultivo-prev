@@ -1,0 +1,781 @@
+{
+ "atualizado_em": "2026-10-27T13:06:50.484656Z",
+ "publicado_em": "2026-10-27T13:06:50.484656Z",
+ "equipe": [
+  "Natasha",
+  "Marcia",
+  "Rafael"
+ ],
+ "teams": {},
+ "feed": [],
+ "diagnosticos": [
+  {
+   "id": "demo-0",
+   "cliente": "Ateliê Lírio Têxtil",
+   "grupo": "Lírio",
+   "cnpj": "10.100.200/0001-10",
+   "cnpjs": [
+    "10.100.200/0001-10"
+   ],
+   "teses": [
+    "RAT/FAP",
+    "salário-maternidade"
+   ],
+   "fase": "contratacao",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "pendente",
+    "esocial": "pendente",
+    "ma": "pendente",
+    "wp": "pendente",
+    "ppt": "pendente",
+    "mapa": "pendente"
+   },
+   "prazo_entrega": "2026-10-31",
+   "proximo_passo": "Enviar checklist de documentos",
+   "proxima_data": "2026-10-30",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-27",
+   "fase_desde": "2026-10-25",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "contratacao",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-1",
+   "cliente": "Doceria Camélia",
+   "grupo": "Camélia",
+   "cnpj": "11.107.203/0001-11",
+   "cnpjs": [
+    "11.107.203/0001-11"
+   ],
+   "teses": [
+    "terço de férias",
+    "verbas indenizatórias"
+   ],
+   "fase": "documentos",
+   "responsavel": "Marcia",
+   "revisor": "Natasha",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "pendente",
+    "ma": "pendente",
+    "wp": "pendente",
+    "ppt": "pendente",
+    "mapa": "pendente"
+   },
+   "prazo_entrega": "2026-10-24",
+   "proximo_passo": "Cobrar folhas de pagamento",
+   "proxima_data": "2026-10-23",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-19",
+   "fase_desde": "2026-10-23",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 200000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Marcia",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "documentos",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-2",
+   "cliente": "Rede Jasmim Saúde",
+   "grupo": "Jasmim",
+   "cnpj": "12.114.206/0001-12",
+   "cnpjs": [
+    "12.114.206/0001-12"
+   ],
+   "teses": [
+    "salário-maternidade",
+    "terceiros"
+   ],
+   "fase": "conferencia",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "andamento",
+    "wp": "pendente",
+    "ppt": "pendente",
+    "mapa": "pendente"
+   },
+   "prazo_entrega": "2026-10-23",
+   "proximo_passo": "Conferir eSocial",
+   "proxima_data": "2026-10-22",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-26",
+   "fase_desde": "2026-10-23",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "conferencia",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-3",
+   "cliente": "Colégio Magnólia",
+   "grupo": "Magnólia",
+   "cnpj": "13.121.209/0001-13",
+   "cnpjs": [
+    "13.121.209/0001-13"
+   ],
+   "teses": [
+    "verbas indenizatórias",
+    "terceiros"
+   ],
+   "fase": "levantamento",
+   "responsavel": "Marcia",
+   "revisor": "Natasha",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "andamento",
+    "ppt": "pendente",
+    "mapa": "pendente"
+   },
+   "prazo_entrega": "2026-11-03",
+   "proximo_passo": "Fechar o WP",
+   "proxima_data": "2026-11-02",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-18",
+   "fase_desde": "2026-10-17",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 950000,
+   "credito_estimado": 200000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Marcia",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "levantamento",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-4",
+   "cliente": "Transportes Orquídea",
+   "grupo": "Orquídea",
+   "cnpj": "14.128.212/0001-14",
+   "cnpjs": [
+    "14.128.212/0001-14"
+   ],
+   "teses": [
+    "verbas indenizatórias",
+    "RAT/FAP"
+   ],
+   "fase": "levantamento",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "pendente",
+    "mapa": "na"
+   },
+   "prazo_entrega": "2026-10-28",
+   "proximo_passo": "Fechar o WP",
+   "proxima_data": "2026-10-27",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-25",
+   "fase_desde": "2026-10-18",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "levantamento",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-5",
+   "cliente": "Hortênsia Alimentos",
+   "grupo": "Hortênsia",
+   "cnpj": "15.135.215/0001-15",
+   "cnpjs": [
+    "15.135.215/0001-15"
+   ],
+   "teses": [
+    "terceiros",
+    "RAT/FAP"
+   ],
+   "fase": "revisao",
+   "responsavel": "Marcia",
+   "revisor": "Natasha",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "andamento",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-10-30",
+   "proximo_passo": "Apresentar ao time",
+   "proxima_data": "2026-10-29",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-26",
+   "fase_desde": "2026-10-17",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 1300000,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Marcia",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "revisao",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-6",
+   "cliente": "Clínica Violeta",
+   "grupo": "Violeta",
+   "cnpj": "16.142.218/0001-16",
+   "cnpjs": [
+    "16.142.218/0001-16"
+   ],
+   "teses": [
+    "terço de férias",
+    "verbas indenizatórias"
+   ],
+   "fase": "revisao",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "andamento",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-10-27",
+   "proximo_passo": "Apresentar ao time",
+   "proxima_data": "2026-10-26",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-19",
+   "fase_desde": "2026-10-15",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "revisao",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-7",
+   "cliente": "Grupo Begônia Varejo",
+   "grupo": "Begônia",
+   "cnpj": "17.149.221/0001-17",
+   "cnpjs": [
+    "17.149.221/0001-17"
+   ],
+   "teses": [
+    "terceiros",
+    "RAT/FAP"
+   ],
+   "fase": "entrega",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "ok",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-10-22",
+   "proximo_passo": "Apresentar ao cliente",
+   "proxima_data": "2026-10-21",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-20",
+   "fase_desde": "2026-10-16",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 1300000,
+   "credito_estimado": 500000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "entrega",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-8",
+   "cliente": "Petúnia Logística",
+   "grupo": "Petúnia",
+   "cnpj": "18.156.224/0001-18",
+   "cnpjs": [
+    "18.156.224/0001-18"
+   ],
+   "teses": [
+    "salário-maternidade",
+    "terceiros"
+   ],
+   "fase": "entrega",
+   "responsavel": "Marcia",
+   "revisor": "Natasha",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "ok",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-10-31",
+   "proximo_passo": "Apresentar ao cliente",
+   "proxima_data": "2026-10-30",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-22",
+   "fase_desde": "2026-10-22",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 180000,
+   "credito_estimado": 200000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Marcia",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "entrega",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-9",
+   "cliente": "Escola Gardênia",
+   "grupo": "Magnólia",
+   "cnpj": "19.163.227/0001-19",
+   "cnpjs": [
+    "19.163.227/0001-19"
+   ],
+   "teses": [
+    "verbas indenizatórias",
+    "terço de férias"
+   ],
+   "fase": "aprovacao",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "ok",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-10-28",
+   "proximo_passo": "Follow-up da aprovação",
+   "proxima_data": "2026-10-27",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-19",
+   "fase_desde": "2026-10-19",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 420000,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "aprovacao",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-10",
+   "cliente": "Tulipa Cosméticos",
+   "grupo": "Tulipa",
+   "cnpj": "20.170.230/0001-20",
+   "cnpjs": [
+    "20.170.230/0001-20"
+   ],
+   "teses": [
+    "terço de férias",
+    "verbas indenizatórias"
+   ],
+   "fase": "aprovacao",
+   "responsavel": "Marcia",
+   "revisor": "Natasha",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "ok",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-11-04",
+   "proximo_passo": "Follow-up da aprovação",
+   "proxima_data": "2026-11-03",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-26",
+   "fase_desde": "2026-10-18",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 950000,
+   "credito_estimado": 200000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Marcia",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "aprovacao",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-11",
+   "cliente": "Azaleia Engenharia",
+   "grupo": "Azaleia",
+   "cnpj": "21.177.233/0001-21",
+   "cnpjs": [
+    "21.177.233/0001-21"
+   ],
+   "teses": [
+    "RAT/FAP",
+    "salário-maternidade"
+   ],
+   "fase": "execucao",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "ok",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-10-31",
+   "proximo_passo": "Transmitir compensação na DCTFWeb",
+   "proxima_data": "2026-10-30",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-21",
+   "fase_desde": "2026-10-26",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "execucao",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-12",
+   "cliente": "Íris Hotelaria",
+   "grupo": "Íris",
+   "cnpj": "22.184.236/0001-22",
+   "cnpjs": [
+    "22.184.236/0001-22"
+   ],
+   "teses": [
+    "terço de férias",
+    "terceiros"
+   ],
+   "fase": "levantamento",
+   "responsavel": "Marcia",
+   "revisor": "Natasha",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "pendente",
+    "mapa": "na"
+   },
+   "prazo_entrega": "2026-11-08",
+   "proximo_passo": "Fechar o WP",
+   "proxima_data": "2026-11-07",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-18",
+   "fase_desde": "2026-10-19",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 200000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Marcia",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "levantamento",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-13",
+   "cliente": "Dália Construções",
+   "grupo": "Dália",
+   "cnpj": "23.191.239/0001-23",
+   "cnpjs": [
+    "23.191.239/0001-23"
+   ],
+   "teses": [
+    "salário-maternidade",
+    "verbas indenizatórias"
+   ],
+   "fase": "documentos",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "pendente",
+    "ma": "pendente",
+    "wp": "pendente",
+    "ppt": "pendente",
+    "mapa": "pendente"
+   },
+   "prazo_entrega": "2026-10-29",
+   "proximo_passo": "Cobrar folhas de pagamento",
+   "proxima_data": "2026-10-28",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-27",
+   "fase_desde": "2026-10-15",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": null,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "documentos",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-14",
+   "cliente": "Margarida Laticínios",
+   "grupo": "Margarida",
+   "cnpj": "24.198.242/0001-24",
+   "cnpjs": [
+    "24.198.242/0001-24"
+   ],
+   "teses": [
+    "terceiros",
+    "salário-maternidade"
+   ],
+   "fase": "concluido",
+   "responsavel": "Marcia",
+   "revisor": "Natasha",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "ok",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-10-30",
+   "proximo_passo": "—",
+   "proxima_data": "2026-10-29",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-23",
+   "fase_desde": "2026-10-15",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 950000,
+   "credito_estimado": 800000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Marcia",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "concluido",
+     "data": "2026-10-22"
+    }
+   ]
+  },
+  {
+   "id": "demo-15",
+   "cliente": "Peônia Moda",
+   "grupo": "Peônia",
+   "cnpj": "25.205.245/0001-25",
+   "cnpjs": [
+    "25.205.245/0001-25"
+   ],
+   "teses": [
+    "verbas indenizatórias",
+    "salário-maternidade"
+   ],
+   "fase": "entrega",
+   "responsavel": "Natasha",
+   "revisor": "Marcia",
+   "etapas": {
+    "darfs": "ok",
+    "esocial": "ok",
+    "ma": "ok",
+    "wp": "ok",
+    "ppt": "ok",
+    "mapa": "ok"
+   },
+   "prazo_entrega": "2026-11-01",
+   "proximo_passo": "Apresentar ao cliente",
+   "proxima_data": "2026-10-31",
+   "criado_em": "2026-09-27",
+   "ultimo_movimento": "2026-10-22",
+   "fase_desde": "2026-10-24",
+   "responsavel_desde": "2026-10-07",
+   "credito_identificado": 1300000,
+   "credito_estimado": 200000,
+   "honorarios_pct": 20,
+   "historico": [
+    {
+     "data": "2026-10-25",
+     "autor": "Natasha",
+     "texto": "Movimento de exemplo.",
+     "fonte": "demo"
+    }
+   ],
+   "trilha": [
+    {
+     "fase": "entrega",
+     "data": "2026-10-22"
+    }
+   ]
+  }
+ ]
+}
