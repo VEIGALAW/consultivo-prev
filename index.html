@@ -16,13 +16,16 @@
  * nav: top bar, abas em pílula · signature: o jardim (canteiros com uma flor por cliente, pétalas preenchidas pelas etapas) · states: empty, full, error (senha), loading (abrindo)
  * axes: light/roman-serif/chromatic-pink · posture: committed · contrast: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H5 E4 S5 R4 V4 · weakest: P, a tabela e as métricas continuam densas; ganharam a paleta e as pétalas nas barras, e a flor da ficha mostra as 6 etapas com nome */
-/* Hallmark · waive 30a · "Casa da Moeda 🪙" é o nome dado pelo dono do produto; fica no texto do nome, nunca como ícone */
+/* Hallmark · waive 30a · "Casa da Moeda 🪙" é o nome dado pelo dono do produto; fica no texto do nome, nunca como ícone
+ * Hallmark · waive 11 · as fadinhas 🧚 são emoji a pedido do dono do produto: personagens que voam pela página, não ícones de interface */
+/* Hallmark · waive 62 · .peek só existe quando o script a cria: é a fadinha escondida, e se esconder é a brincadeira */
 :root{
   --space-3xs:2px; --space-2xs:4px; --space-xs:8px; --space-sm:12px; --space-md:16px; --space-lg:24px; --space-xl:40px; --space-2xl:64px;
   --text-xs:.75rem; --text-sm:.875rem; --text-md:1rem; --text-lg:1.125rem; --text-xl:1.35rem; --text-2xl:1.75rem; --text-3xl:2.4rem; --text-4xl:3.6rem;
   --ease:cubic-bezier(.2,.7,.2,1); --out:cubic-bezier(.16,1,.3,1); --spring:cubic-bezier(.34,1.56,.64,1);
   --t1:140ms; --t2:240ms; --t3:480ms;
-  --z-sticky:200; --z-modal:400; --z-fx:600;
+  --z-sticky:200; --z-modal:400; --z-fx:600; --z-fada:590; --z-toast:620;
+  --gold:#ffcf5a; --pearl:#ffffff; --fada-glow:0 2px 6px rgba(214,51,108,.4);
   --container:1440px; --gutter:32px;
   --r:12px; --r2:20px; --r3:28px;
 
@@ -112,6 +115,18 @@ p{margin:0}
 .deco:hover .fl{animation:sway 1.6s var(--ease) infinite}
 .deco.blooming .fl{animation:spinBloom .7s var(--spring)}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:var(--z-fx);overflow:hidden}
+#glitter{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:var(--z-fx)}
+/* fadinhas: voam pela página e fogem do mouse */
+.fada{position:fixed;left:0;top:0;z-index:var(--z-fada);font-size:30px;line-height:1;cursor:pointer;user-select:none;border:0;background:none;padding:var(--space-2xs);will-change:transform;filter:drop-shadow(var(--fada-glow))}
+.fada span{display:block;animation:flutter .45s ease-in-out infinite alternate}
+.fada.flip span{scale:-1 1}
+@keyframes flutter{from{transform:translateY(-3px) rotate(-7deg)}to{transform:translateY(3px) rotate(7deg)}}
+.peek{position:absolute;right:-12px;top:-10px;font-size:20px;line-height:1;pointer-events:none;opacity:0;transform:scale(.4) rotate(-25deg);animation:peekaboo 9s var(--ease) infinite;animation-delay:var(--pd,2s)}
+.bloom:hover .peek{animation:none;opacity:1;transform:none;transition:opacity var(--t2),transform var(--t3) var(--out)}
+@keyframes peekaboo{0%,84%,100%{opacity:0;transform:scale(.4) rotate(-25deg)}88%,96%{opacity:1;transform:none}}
+.toast{position:fixed;left:50%;bottom:var(--space-lg);z-index:var(--z-toast);background:var(--rose-deep);color:var(--rose-ink);padding:var(--space-sm) var(--space-lg);border-radius:999px;font-weight:600;font-size:var(--text-sm);box-shadow:var(--shadow-2);pointer-events:none;opacity:0;transform:translate(-50%,20px);transition:opacity var(--t2),transform var(--t3) var(--out);max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.fadatoggle{border:0;background:none;color:var(--rose-text);font-size:var(--text-xs);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;min-height:32px;margin-left:auto}
 .fx{position:absolute;display:block;animation:burst 1.05s var(--out) forwards}
 .fx-petal{width:13px;height:17px;background:var(--c);border-radius:70% 0 70% 0}
 .fx-spark{width:10px;height:10px;background:var(--c);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
@@ -532,6 +547,8 @@ footer .deco{width:22px;height:22px}
 </svg>
 
 <div id="fx" aria-hidden="true"></div>
+<canvas id="glitter" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <div id="lock">
   <div class="lockwrap">
@@ -807,6 +824,84 @@ function decoFlower(c, n){
   const pts = [...Array(n)].map((_, i) => `<g transform="rotate(${i*360/n})"><ellipse class="pt p-ok" cx="0" cy="-14" rx="${n===5?9:8}" ry="14"/></g>`).join("");
   return `<svg class="fl" viewBox="-32 -32 64 64" style="--c:${c}" aria-hidden="true">${pts}<circle class="ctr" r="6.5"/><circle class="ctr2" r="2.6" cx="-2" cy="-2"/></svg>`;
 }
+/* ---------- purpurina (canvas) ---------- */
+const G = {c:null, x:null, ps:[], run:false, cols:[]};
+function glitterInit(){
+  const c = $("#glitter"); G.c = c; G.x = c.getContext("2d");
+  const fit = () => { const d = devicePixelRatio || 1; c.width = innerWidth * d; c.height = innerHeight * d; G.x.setTransform(d, 0, 0, d, 0, 0); };
+  fit(); addEventListener("resize", fit);
+  const cs = getComputedStyle(document.documentElement);
+  G.cols = ["--gold","--f1","--f2","--f4","--pearl","--rose","--gold","--pearl"].map(v => cs.getPropertyValue(v).trim());
+}
+function gpush(p){ if(G.ps.length < 1400) G.ps.push(p); if(!G.run){ G.run = true; requestAnimationFrame(gtick); } }
+function glitter(px, py, n, power){
+  if(RM || !G.x) return;
+  power = power || 1;
+  for(let i = 0; i < (n || 40); i++){
+    const a = -Math.PI / 2 + (Math.random() - .5) * Math.PI * 1.5, sp = (2 + Math.random() * 6) * power;
+    gpush({x:px, y:py, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, r:1 + Math.random() * 2.4, c:G.cols[i % G.cols.length], rot:Math.random() * 6, vr:(Math.random() - .5) * .35, t:Math.random() * 6, k:i % 3, life:0});
+  }
+}
+function glitterRain(n){
+  if(RM || !G.x) return;
+  for(let i = 0; i < n; i++) gpush({x:Math.random() * innerWidth, y:-10 - Math.random() * innerHeight * .6, vx:(Math.random() - .5) * .8, vy:.6 + Math.random() * 1.4, r:1 + Math.random() * 2.4, c:G.cols[i % G.cols.length], rot:Math.random() * 6, vr:(Math.random() - .5) * .3, t:Math.random() * 6, k:i % 3, life:0});
+}
+function gstar(x, r){ x.beginPath(); for(let i = 0; i < 8; i++){ const a = i * Math.PI / 4, rr = i % 2 ? r * .32 : r; x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } x.closePath(); x.fill(); }
+function gtick(){
+  const x = G.x; x.clearRect(0, 0, innerWidth, innerHeight);
+  G.ps = G.ps.filter(p => p.y < innerHeight + 20 && p.life < 900);
+  for(const p of G.ps){
+    p.vy = Math.min(p.vy + .11, 1.6 + p.r * .35);          /* cai devagar, como purpurina */
+    p.vx = p.vx * .975 + Math.sin(p.life / 14 + p.t * 3) * .05;
+    p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+    x.globalAlpha = .45 + .55 * Math.abs(Math.sin(p.life / 5 + p.t));  /* brilho piscando */
+    x.fillStyle = p.c; x.save(); x.translate(p.x, p.y); x.rotate(p.rot);
+    if(p.k === 0) x.fillRect(-p.r, -p.r * .55, p.r * 2, p.r * 1.1);
+    else if(p.k === 1){ x.beginPath(); x.arc(0, 0, p.r * .8, 0, 7); x.fill(); }
+    else gstar(x, p.r * 1.8);
+    x.restore();
+  }
+  x.globalAlpha = 1;
+  if(G.ps.length) requestAnimationFrame(gtick); else G.run = false;
+}
+let toastT = 0;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+
+/* ---------- fadinhas ---------- */
+const FADAS = [], mouse = {x:-999, y:-999};
+addEventListener("pointermove", e => { mouse.x = e.clientX; mouse.y = e.clientY; }, {passive:true});
+const FRASES = ["Você pegou a fadinha! Entregas no prazo a semana toda.", "Pegou! A fadinha deixou purpurina na sua mesa.", "Fadinha capturada: o próximo crédito vem gordinho.", "Que mira! A fadinha manda um beijo."];
+function fairiesOn(){
+  if(RM || FADAS.length) return;
+  const n = innerWidth < 700 ? 1 : 2, em = ["🧚‍♀️","🧚🏻‍♀️","🧚🏽‍♀️"];
+  for(let i = 0; i < n; i++){
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "fada"; b.setAttribute("aria-label", "Fadinha: tente pegar"); b.innerHTML = `<span>${em[i % em.length]}</span>`;
+    document.body.appendChild(b);
+    FADAS.push({el:b, x:80 + Math.random() * (innerWidth - 160), y:120 + Math.random() * (innerHeight - 240), vx:0, vy:0, t:Math.random() * 100, seed:Math.random() * 10});
+  }
+  requestAnimationFrame(fly);
+}
+function fairiesOff(){ FADAS.splice(0).forEach(f => f.el.remove()); }
+function fly(){
+  if(!FADAS.length) return;
+  for(const f of FADAS){
+    f.t += .012;
+    f.vx += Math.cos(f.t * 2.1 + f.seed) * .07; f.vy += Math.sin(f.t * 1.6 + f.seed * 2) * .06;
+    const dx = f.x - mouse.x, dy = f.y - mouse.y, d = Math.hypot(dx, dy) || 1;
+    const near = d < 170;
+    if(near){ const k = (170 - d) / 170 * 1.6; f.vx += dx / d * k; f.vy += dy / d * k; }
+    if(f.x < 24) f.vx += .5; if(f.x > innerWidth - 60) f.vx -= .5; if(f.y < 70) f.vy += .5; if(f.y > innerHeight - 60) f.vy -= .5;
+    f.vx *= .94; f.vy *= .94;
+    const sp = Math.hypot(f.vx, f.vy), mx = near ? 10 : 2.2; if(sp > mx){ f.vx *= mx / sp; f.vy *= mx / sp; }
+    f.x += f.vx; f.y += f.vy;
+    f.el.style.transform = `translate(${f.x}px,${f.y}px)`;
+    f.el.classList.toggle("flip", f.vx > .2);
+    if(G.x && Math.random() < (near ? .7 : .12)) gpush({x:f.x + 18, y:f.y + 26, vx:(Math.random() - .5) * .6, vy:Math.random() * .4, r:.8 + Math.random() * 1.6, c:G.cols[Math.floor(Math.random() * G.cols.length)], rot:0, vr:.1, t:Math.random() * 6, k:Math.floor(Math.random() * 3), life:0});
+  }
+  requestAnimationFrame(fly);
+}
+
 const deco = (c, n, label) => `<button type="button" class="deco" aria-label="${label || "Flor"}">${decoFlower(c, n)}</button>`;
 /* Chuva de pétalas, faíscas e corações saindo do ponto do clique */
 function burst(px, py, n){
@@ -877,6 +972,12 @@ function renderKpis(){
 }
 
 /* ---------- jardim ---------- */
+function hideFairy(){
+  if(RM) return;
+  const bs = $$("#beds .bloom .head"); if(!bs.length) return;
+  const h = bs[Math.floor(Math.random() * bs.length)];
+  h.insertAdjacentHTML("beforeend", `<span class="peek" aria-hidden="true" style="--pd:${(1 + Math.random() * 6).toFixed(1)}s">🧚‍♀️</span>`);
+}
 function renderGarden(){
   const list = filtered();
   const open = list.filter(x => x._open);
@@ -901,6 +1002,7 @@ function renderGarden(){
     <span class="people">${people.map(p => `<span><i style="--c:${PCOL[p]}"></i>${esc(p)}</span>`).join("")}</span>`;
 
   if(!DB.diagnosticos.length){ $("#beds").innerHTML = vazio(SEM_DADOS); return; }
+  requestAnimationFrame(hideFairy);
   const beds = ["diag","interna","cliente","exec"].filter(k => !F.grp || F.grp === k);
   let n = 0;
   const bloom = x => {
@@ -1264,13 +1366,13 @@ function boot(db){
   }
   $("#upd").textContent = `Atualizado ${dt.toLocaleDateString("pt-BR")} ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}, ${DB.diagnosticos.filter(x=>!FIM.has(x.fase)).length} diagnósticos ativos`;
   $("#miniflowers").innerHTML = deco("var(--f1)", 6, "Flor rosa") + deco("var(--f2)", 5, "Flor lilás");
-  $("#foot").innerHTML = `${deco("var(--f4)", 5, "Flor")}<span>Fonte: grupo "Diagnóstico - Prev" no Teams, lido pelo robô Casa da Moeda às 7h45 e 19h45. Último sync: ${DB.teams?.ultima_msg ? new Date(DB.teams.ultima_msg).toLocaleString("pt-BR") : "—"}.</span>`;
+  $("#foot").innerHTML = `${deco("var(--f4)", 5, "Flor")}<span>Fonte: grupo "Diagnóstico - Prev" no Teams, lido pelo robô Casa da Moeda às 7h45 e 19h45. Último sync: ${DB.teams?.ultima_msg ? new Date(DB.teams.ultima_msg).toLocaleString("pt-BR") : "—"}.</span>${RM ? "" : `<button type="button" class="fadatoggle" id="fadatoggle">${LS.get("prev.fadas") === "off" ? "Chamar as fadinhas" : "Mandar as fadinhas dormirem"}</button>`}`;
   render();
 }
 
 $("#lockform").addEventListener("submit", async e => {
   e.preventDefault(); $("#err").textContent = ""; $("#unlockbtn").disabled = true; $("#unlockbtn").innerHTML = '<span class="spin" aria-hidden="true"></span>Abrindo';
-  try { const db = await unlock($("#pw").value, $("#remember").checked); burstAt($("#unlockbtn"), 24); boot(db); }
+  try { const db = await unlock($("#pw").value, $("#remember").checked); burstAt($("#unlockbtn"), 24); glitterRain(260); boot(db); }
   catch(err){ $("#err").textContent = err.message; replay($(".lockbox"), "shake"); $("#pw").select(); }
   finally { $("#unlockbtn").disabled = false; $("#unlockbtn").textContent = "Entrar"; }
 });
@@ -1285,6 +1387,14 @@ $("#wknext").onclick = () => { weekOffset++; renderWeek(1); };
 $("#wktoday").onclick = () => { const d = weekOffset > 0 ? -1 : 1; weekOffset = 0; renderWeek(d); };
 $("#tbl").addEventListener("click", e => { const th = e.target.closest("th"); if(th){ const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : 1; sortKey = k; renderTable(); } });
 document.addEventListener("click", e => {
+  const pt = (el => { if(e.clientX || e.clientY) return [e.clientX, e.clientY]; const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })(e.target);
+  const fd = e.target.closest(".fada");
+  if(fd){ glitter(pt[0], pt[1], 120, 1.4); burst(pt[0], pt[1], 22); toast(FRASES[Math.floor(Math.random() * FRASES.length)]);
+    const f = FADAS.find(q => q.el === fd); if(f){ f.x = Math.random() * (innerWidth - 100) + 50; f.y = Math.random() * (innerHeight - 200) + 100; } return; }
+  if(e.target.closest("#fadatoggle")){ const off = LS.get("prev.fadas") !== "off"; LS.set("prev.fadas", off ? "off" : "on"); off ? fairiesOff() : fairiesOn(); $("#fadatoggle").textContent = off ? "Chamar as fadinhas" : "Mandar as fadinhas dormirem"; return; }
+  if(!e.target.closest("input,textarea,select,label")) glitter(pt[0], pt[1], 36);
+  const pk = e.target.closest(".bloom")?.querySelector(".peek");
+  if(pk){ pk.remove(); glitterRain(220); toast("Você achou a fadinha escondida! Ela foi se esconder em outra flor."); setTimeout(hideFairy, 1500); }
   const d = e.target.closest(".deco");
   if(d){ burst(e.clientX || d.getBoundingClientRect().left + 12, e.clientY || d.getBoundingClientRect().top + 12, 16); replay(d, "blooming"); return; }
   if(e.target.closest("#drawer")) return;
@@ -1309,6 +1419,9 @@ const th = LS.get("prev.theme"); if(th) document.documentElement.dataset.theme =
 { const d = new Date(); $("#lockdate").textContent = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}`; }
 $("#lockflowers").innerHTML = [["var(--f1)",6,72,96,"0s"],["var(--f2)",5,52,64,".15s"],["var(--f3)",5,64,84,".3s"],["var(--f4)",6,44,48,".45s"],["var(--f5)",5,56,72,".6s"]]
   .map(([c,n,s,h,d]) => `<button type="button" class="deco" aria-label="Flor" style="--s:${s}px;--h:${h}px;--d:${d}">${decoFlower(c, n)}</button>`).join("");
+
+glitterInit();
+if(LS.get("prev.fadas") !== "off") fairiesOn();
 
 // ?demo=1 abre dados fictícios sem senha (para trabalhar o design sem expor clientes reais)
 if(new URLSearchParams(location.search).has("demo")){
